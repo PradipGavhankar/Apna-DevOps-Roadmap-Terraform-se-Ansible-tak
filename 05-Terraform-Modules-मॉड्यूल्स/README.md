@@ -1,4 +1,4 @@
-# 🚀 DevOps Terraform Roadmap – 5 Core Modules (Hinglish Edition)
+# 🚀 DevOps Terraform Roadmap – 5 Core Modules
 
 ---
 
@@ -6,23 +6,19 @@
 
 ## 🟢 पहले हिन्दी में आसान समझ
 
-Terraform ek Infrastructure as Code tool hai jisse hum Azure me resources code se bana sakte hain.
+टेरेफॉर्म एक ऐसा उपकरण है जिससे हम क्लाउड में संसाधन को कोड के माध्यम से बना सकते हैं।  
+Terraform ek aisa tool hai jisse hum cloud me resources ko code ke through bana sakte hain.
 
-Is module me hum:
-- Azure provider configure karenge
-- Ek Resource Group create karenge
-
-Matlab: Portal se nahi, code se infrastructure banega 💪
+इस मॉड्यूल में हम एज़्योर प्रदाता को जोड़ेंगे और एक संसाधन समूह बनाएंगे।  
+Is module me hum Azure provider configure karenge aur ek Resource Group banayenge.
 
 ---
 
 ## 🔵 English Explanation
 
-Terraform is an Infrastructure as Code tool used to provision Azure resources using code.
+Terraform is a tool used to create cloud resources using code.
 
-In this module:
-- We configure the Azure provider
-- Create a Resource Group
+In this module, we configure the Azure provider and create a Resource Group.
 
 ---
 
@@ -33,7 +29,7 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "~>3.0"  # version constraint lagana zaruri hai
+      version = "~>3.0"  # संस्करण सीमा निर्धारित करना आवश्यक है
     }
   }
 }
@@ -43,8 +39,8 @@ provider "azurerm" {
 }
 
 resource "azurerm_resource_group" "rg" {
-  name     = "rg-devops-demo"  # resource group ka naam
-  location = "East US"         # region
+  name     = "rg-devops-demo"  # संसाधन समूह का नाम
+  location = "East US"         # क्षेत्र
 }
 ```
 
@@ -52,24 +48,37 @@ resource "azurerm_resource_group" "rg" {
 
 ## ✅ Good Practice
 
-- Version constraint lagao  
-- Naming standard follow karo  
-- Code Git me rakho  
+हमेशा संस्करण सीमा निर्धारित करें।  
+Always define version constraint.
+
+चर का उपयोग करें और सीधे मान न लिखें।  
+Use variables and avoid hardcoding.
+
+कोड को संस्करण नियंत्रण प्रणाली में रखें।  
+Keep code in version control.
 
 ---
 
 ## ❌ Bad Practice
 
-- Version specify na karna  
-- Random naam rakh dena  
-- Portal se manually change karna  
+सदस्यता पहचान संख्या सीधे कोड में लिखना।  
+Hardcoding subscription ID.
+
+उत्पादन में बिना योजना देखे लागू करना।  
+Applying directly in production without plan.
+
+पोर्टल से सीधे परिवर्तन करना।  
+Making manual portal changes.
 
 ---
 
 ## 😂 Thoda DevOps Comedy
 
-Junior: "Sir portal se bana du?"  
-Senior: "Nahi beta, warna Terraform bolega – mujhe kyun laaye ho 😄"
+"पोर्टल से बना दिया है।"  
+"I created it from portal."
+
+"तो फिर टेरेफॉर्म क्यों सीखा?"  
+"Then why did you learn Terraform? 😄"
 
 ---
 
@@ -83,19 +92,21 @@ Apply complete! Resources: 1 added, 0 changed, 0 destroyed.
 
 ## ✅ Good Practice (Production Ready Mindset)
 
-✔ Always use version constraint  
-✔ Variables use karo, hardcoding mat karo  
-✔ terraform plan production me mandatory  
-✔ Remote backend use karo  
+✔ हमेशा संस्करण सीमा निर्धारित करें  
+✔ चर का उपयोग करें, सीधे मान न लिखें  
+✔ स्थिति फ़ाइल को Git में commit न करें  
+✔ उत्पादन में terraform plan अनिवार्य है  
+✔ दूरस्थ backend का उपयोग करें  
 
 ---
 
 ## ❌ Bad Practice (Danger Zone)
 
 ❌ Hardcoded subscription ID  
+❌ State file GitHub में push करना  
 ❌ Direct apply in production  
 ❌ No version control  
-❌ Portal se manually change karna  
+❌ Portal से manually change करना  
 
 ---
 
@@ -103,17 +114,19 @@ Apply complete! Resources: 1 added, 0 changed, 0 destroyed.
 
 ## 🟢 पहले हिन्दी में आसान समझ
 
-Variables use karne se code flexible aur reusable ban jata hai.
+चर कोड को लचीला और पुनः उपयोग योग्य बनाते हैं।  
+Variables make code flexible and reusable.
 
-Output se hum resource ki info dekh sakte hain.
+आउटपुट हमें बनाए गए संसाधनों की जानकारी दिखाते हैं।  
+Outputs show information about created resources.
 
 ---
 
 ## 🔵 English Explanation
 
-Variables make Terraform configurations reusable and flexible.
+Variables make Terraform configurations reusable.
 
-Outputs display resource values after execution.
+Outputs display values after execution.
 
 ---
 
@@ -127,7 +140,7 @@ variable "location" {
 
 resource "azurerm_resource_group" "rg" {
   name     = "rg-devops-demo"
-  location = var.location   # yaha variable use kiya gaya hai
+  location = var.location  # यहाँ चर का उपयोग किया गया है
 }
 
 output "rg_name" {
@@ -139,23 +152,31 @@ output "rg_name" {
 
 ## ✅ Good Practice
 
-- Variables alag file me rakho  
-- Sensitive values hide karo  
-- tfvars file use karo  
+चर को अलग फ़ाइल में रखें।  
+Keep variables in separate file.
+
+संवेदनशील जानकारी सुरक्षित रखें।  
+Keep sensitive data secure.
 
 ---
 
 ## ❌ Bad Practice
 
-- Sab kuch hardcode kar dena  
-- Password Git me daal dena  
+पासवर्ड को सार्वजनिक भंडार में डालना।  
+Pushing passwords to GitHub.
+
+सभी मान सीधे कोड में लिखना।  
+Hardcoding all values.
 
 ---
 
 ## 😂 DevOps Comedy
 
-"Har project me region change karna pad raha hai 😩"  
-"Kyunki tumne variable use hi nahi kiya 😄"
+"हर बार कोड बदलना पड़ता है।"  
+"I have to change code every time."
+
+"क्योंकि तुमने चर का उपयोग नहीं किया।"  
+"Because you did not use variables 😄"
 
 ---
 
@@ -168,29 +189,15 @@ rg_name = rg-devops-demo
 
 ---
 
-## ✅ Good Practice (Production Ready Mindset)
-
-✔ Variables use karo hardcoding mat karo  
-✔ terraform plan production me mandatory  
-✔ Version constraint lagao  
-
----
-
-## ❌ Bad Practice (Danger Zone)
-
-❌ Hardcoded values  
-❌ Direct apply in production  
-❌ No version control  
-
----
-
-# 🧠 Module 3 – Terraform State aur Remote Backend
+# 🧠 Module 3 – State aur Backend
 
 ## 🟢 पहले हिन्दी में आसान समझ
 
-State file batati hai ki actual cloud me kya bana hua hai.
+स्थिति फ़ाइल वास्तविक क्लाउड की स्थिति को सुरक्षित रखती है।  
+State file stores actual infrastructure state.
 
-Team environment me state ko local machine pe nahi, remote backend me rakhna chahiye.
+टीम में काम करते समय इसे दूरस्थ स्थान पर रखना चाहिए।  
+In team environment, it should be stored remotely.
 
 ---
 
@@ -219,23 +226,31 @@ terraform {
 
 ## ✅ Good Practice
 
-- Remote backend use karo  
-- State secure rakho  
-- Team me state lock enable karo  
+स्थिति फ़ाइल को सुरक्षित रखें।  
+Keep state file secure.
+
+दूरस्थ backend का उपयोग करें।  
+Use remote backend.
 
 ---
 
 ## ❌ Bad Practice
 
-- Local state team me use karna  
-- State file GitHub me push karna  
+स्थिति फ़ाइल GitHub में डालना।  
+Pushing state file to GitHub.
+
+स्थानीय मशीन में production state रखना।  
+Keeping production state locally.
 
 ---
 
 ## 😂 DevOps Comedy
 
-"State file delete ho gayi 😭"  
-"Ab Terraform bhi bolega – main kya karu bhai 😄"
+"State file delete हो गई!"  
+"State file got deleted!"
+
+"अब Terraform भी confused है।"  
+"Now Terraform is also confused 😄"
 
 ---
 
@@ -247,35 +262,18 @@ Successfully configured the backend "azurerm"
 
 ---
 
-## ✅ Good Practice (Production Ready Mindset)
-
-✔ State file Git me commit mat karo  
-✔ Remote backend mandatory  
-✔ terraform plan production me mandatory  
-
----
-
-## ❌ Bad Practice (Danger Zone)
-
-❌ State file GitHub me push karna  
-❌ Direct apply in production  
-❌ No version control  
-
----
-
-# 🏗 Module 4 – Terraform Modules
+# 🏗 Module 4 – Modules
 
 ## 🟢 पहले हिन्दी में आसान समझ
 
-Modules reusable blocks hote hain.
-
-Isse code clean, structured aur professional ban jata hai.
+मॉड्यूल कोड को व्यवस्थित और पुनः उपयोग योग्य बनाते हैं।  
+Modules make code organized and reusable.
 
 ---
 
 ## 🔵 English Explanation
 
-Modules help structure and reuse Terraform configurations.
+Modules help structure and reuse Terraform code.
 
 ---
 
@@ -293,23 +291,28 @@ module "rg" {
 
 ## ✅ Good Practice
 
-- Code ko modules me divide karo  
-- Proper folder structure rakho  
-- Reusable design rakho  
+कोड को छोटे भागों में बाँटें।  
+Divide code into small modules.
+
+साफ़ फ़ोल्डर संरचना रखें।  
+Maintain clean folder structure.
 
 ---
 
 ## ❌ Bad Practice
 
-- Sab kuch ek hi file me likh dena  
-- Copy paste karte rehna  
+पूरा कोड एक ही फ़ाइल में लिखना।  
+Writing everything in one file.
 
 ---
 
 ## 😂 DevOps Comedy
 
-"Module kyun banaun?"  
-"Taaki future me khud ko gaali na deni pade 😄"
+"मॉड्यूल क्यों?"  
+"Why module?"
+
+"ताकि भविष्य में दिक्कत न हो।"  
+"So that future me you don’t suffer 😄"
 
 ---
 
@@ -321,30 +324,15 @@ module.rg.azurerm_resource_group.rg: Creation complete
 
 ---
 
-## ✅ Good Practice (Production Ready Mindset)
-
-✔ Modular architecture use karo  
-✔ Version control maintain karo  
-✔ terraform plan production me mandatory  
-
----
-
-## ❌ Bad Practice (Danger Zone)
-
-❌ No version control  
-❌ Direct apply in production  
-❌ Portal se manually change karna  
-
----
-
-# 🤖 Module 5 – Terraform + Ansible Integration
+# 🤖 Module 5 – Terraform + Ansible
 
 ## 🟢 पहले हिन्दी में आसान समझ
 
-Terraform infrastructure banata hai.  
-Ansible server configuration karta hai.
+टेरेफॉर्म आधारभूत संरचना बनाता है।  
+Terraform builds infrastructure.
 
-Dono ka role alag hai, mix mat karo.
+एन्सिबल सर्वर की व्यवस्था करता है।  
+Ansible configures servers.
 
 ---
 
@@ -356,48 +344,46 @@ Ansible configures servers after provisioning.
 
 ---
 
-## 🧱 Simple Flow Example (Hindi Comments)
+## 🧱 Simple Flow Example
 
 ```bash
-terraform apply         # pehle infrastructure banega
-ansible-playbook site.yml   # phir configuration hogi
+terraform apply
+ansible-playbook site.yml
 ```
 
 ---
 
 ## ✅ Good Practice
 
-- Infra aur configuration alag rakho  
-- Manual SSH avoid karo  
-- Automation complete rakho  
+ढाँचा और व्यवस्था अलग रखें।  
+Keep infra and configuration separate.
+
+स्वचालन बनाए रखें।  
+Maintain automation.
 
 ---
 
 ## ❌ Bad Practice
 
-- Terraform se software install karna  
-- Ansible se VM create karna  
-- Manual server changes  
+हाथ से सर्वर में बदलाव करना।  
+Making manual server changes.
 
 ---
 
 ## 😂 DevOps Comedy
 
-"Terraform se nginx install karu?"  
-"Role clarity naam ki bhi koi cheez hoti hai 😄"
+"सब कुछ Terraform से कर दूँ?"  
+"Should I do everything with Terraform?"
 
----
-
-## 🚀 Real Output Example
-
-```
-PLAY RECAP
-server1 : ok=5 changed=2 failed=0
-```
+"नहीं, काम का विभाजन समझो 😄"  
+"No, understand role separation 😄"
 
 ---
 
 # 🏁 Final DevOps Rule
 
+स्वचालन + संस्करण नियंत्रण + जाँच प्रक्रिया  
 Automation + Version Control + Review Process  
+
+= सुरक्षित उत्पादन वातावरण 🚀  
 = Safe Production Infrastructure 🚀
