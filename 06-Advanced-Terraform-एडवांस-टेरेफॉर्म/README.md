@@ -1,3 +1,87 @@
+# 🧠 Advanced Terraform Mind Map
+
+## Infrastructure Automation Journey
+
+```
+                         Terraform Advanced
+                                │
+        ┌───────────────────────┼────────────────────────┐
+        │                       │                        │
+    Data Structure           Iteration               Safety
+        │                       │                        │
+   map(object)              for_each                validation
+        │                       │                        │
+ VM Config (size, env)     Loop over VMs        Allowed values check
+        │                       │                        │
+        └───────────────┐       │                        │
+                        │       │                        │
+                   dynamic block│                        │
+                        │       │                        │
+                   Automatic Tags│                        │
+                        │       │                        │
+                        ▼       ▼                        ▼
+                  Production Ready Azure Deployment
+```
+
+---
+
+# 🔄 Execution Flow Diagram
+
+```
+terraform.tfvars (User Input)
+            │
+            ▼
+      map(object) variable
+            │
+            ▼
+        validation check
+            │
+            ▼
+        for_each loop
+            │
+   ┌────────┴────────┐
+   ▼                 ▼
+Network Interface   Virtual Machine
+                          │
+                          ▼
+                    dynamic block
+                          │
+                          ▼
+                        Tags
+```
+
+---
+
+# 🎯 Concept Hierarchy
+
+```
+Terraform
+   │
+   ├── Basics
+   │     ├── resource
+   │     ├── variable
+   │     ├── output
+   │
+   ├── Intermediate
+   │     ├── count
+   │     ├── functions
+   │
+   └── Advanced
+         ├── map(object)
+         ├── for_each
+         ├── validation
+         ├── dynamic block
+```
+
+---
+
+# 🚀 Result
+
+✔ Scalable Architecture  
+✔ Dynamic Infrastructure  
+✔ Production Ready Pattern  
+✔ Enterprise Level Terraform Design  
+
 # 🚀 Advanced Terraform Practical with Mind Map
 
 ## 🎯 परिस्थिति (Scenario)
