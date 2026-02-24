@@ -102,30 +102,206 @@ Explanation:
 This is most commonly used block in Terraform.
 
 ---
+## 🔹 Arguments (Terraform में Arguments क्या होते हैं?)
 
-## 🔹 Arguments
+---
 
-Arguments define properties inside blocks.
+# 🟢 पहले आसान हिन्दी में समझ
+
+Terraform में **Arguments वो values होती हैं जो हम block के अंदर देते हैं**,  
+ताकि Terraform को पता चले कि resource कैसे बनाना है।
+
+मतलब:
+
+Block = Structure  
+Argument = Settings  
+
+जैसे मोबाइल खरीदते समय:
+
+- Brand = Samsung  
+- Color = Black  
+- Storage = 128GB  
+
+ये सब mobile के arguments हैं 😄
+
+उसी तरह Terraform में:
+
+- Resource का नाम क्या होगा  
+- Location कौन सी होगी  
+- Size क्या होगा  
+
+ये सब arguments से decide होता है।
+
+---
+
+# 🔵 English Explanation
+
+Arguments define the configuration properties inside a Terraform block.
+
+They tell Terraform:
+
+- What to create  
+- How to create  
+- Where to create  
+
+Arguments are written inside `{ }` braces.
+
+---
+
+# 🧱 Simple Real Example (Azure Resource Group)
+
+```hcl
+resource "azurerm_resource_group" "rg" {
+
+  # Argument 1 → Resource Group name
+  name = "rg-demo"
+
+  # Argument 2 → Azure region
+  location = "Central India"
+}
+```
+
+यहाँ:
+
+- `name` → Argument  
+- `"rg-demo"` → Value  
+- `location` → Argument  
+- `"Central India"` → Value  
+
+Terraform इन arguments के आधार पर Azure में resource बनाएगा।
+
+---
+
+# 🧠 Required vs Optional Arguments
+
+कुछ arguments mandatory होते हैं (Required)  
+कुछ optional होते हैं।
 
 Example:
 
 ```hcl
-name     = "rg-demo"
-location = "Central India"
+resource "azurerm_resource_group" "rg" {
+  name     = "rg-demo"         # Required
+  location = "Central India"   # Required
+
+  tags = {                     # Optional
+    environment = "dev"
+  }
+}
 ```
 
-Argument Types:
+अगर required argument नहीं दिया तो Terraform error देगा ❌
 
-- string  
-- number  
-- bool  
-- list  
-- map  
-- set  
+---
 
-Arguments can be:
-- Required  
-- Optional  
+# 📦 Argument Types (Data Types)
+
+Terraform में arguments अलग-अलग type के हो सकते हैं:
+
+## 1️⃣ String
+
+```hcl
+name = "rg-demo"
+```
+
+Text value
+
+---
+
+## 2️⃣ Number
+
+```hcl
+disk_size = 30
+```
+
+Numeric value
+
+---
+
+## 3️⃣ Boolean (true / false)
+
+```hcl
+enable_https = true
+```
+
+Yes / No type value
+
+---
+
+## 4️⃣ List
+
+```hcl
+availability_zones = ["1", "2", "3"]
+```
+
+Multiple values in order
+
+---
+
+## 5️⃣ Map
+
+```hcl
+tags = {
+  environment = "dev"
+  owner       = "devops-team"
+}
+```
+
+Key-value pair format
+
+---
+
+## 6️⃣ Set
+
+Set list जैसा होता है लेकिन duplicate allow नहीं करता।
+
+```hcl
+allowed_ips = ["10.0.0.1", "10.0.0.2"]
+```
+
+---
+
+# 🚀 Real Output Example
+
+अगर argument सही दिए:
+
+```
+Plan: 1 to add, 0 to change, 0 to destroy.
+```
+
+अगर required argument missing हुआ:
+
+```
+Error: Missing required argument
+```
+
+---
+
+# ✅ Good Practice
+
+✔ Hardcoding कम करो  
+✔ Variables use करो  
+✔ Meaningful names use करो  
+✔ Required arguments समझकर use करो  
+
+---
+
+# ❌ Bad Practice
+
+❌ Required argument skip करना  
+❌ Random naming  
+❌ Same name हर environment में use करना  
+❌ Hardcoded production values  
+
+---
+
+# 😂 DevOps Comedy
+
+Argument गलत दिया तो?
+
+Terraform बोलेगा:
+
+"Main guess nahi karta bhai… value de warna error le" 😄
 
 ---
 
