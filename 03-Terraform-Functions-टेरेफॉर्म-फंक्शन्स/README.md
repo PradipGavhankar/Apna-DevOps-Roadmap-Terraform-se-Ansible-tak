@@ -1,3 +1,4 @@
+
 # Terraform Functions – टेरफॉर्म फंक्शन (Azure Focus)
 
 ---
@@ -17,7 +18,7 @@
 Functions की सहायता से हम:
 
 - Text बदल सकते हैं
-- Multiple resources बना सकते हैं
+- Multiple resources बना सकते हैं (count के माध्यम से)
 - Conditions लगा सकते हैं
 - Code को intelligent बना सकते हैं
 
@@ -36,7 +37,7 @@ In real-world Azure projects, we often need:
 Terraform Functions and Expressions help us:
 
 - Manipulate strings
-- Create multiple resources
+- Create multiple resources (using count)
 - Apply conditions
 - Make infrastructure dynamic
 
@@ -44,11 +45,7 @@ Terraform Functions and Expressions help us:
 
 # 🧪 Example 1: count (Multiple Resources)
 
-
-
 यदि हमें 3 Resource Groups बनाने हों, तो हम `count` का उपयोग कर सकते हैं।
-
-
 
 If we want to create 3 Resource Groups, we can use the `count` argument.
 
@@ -83,9 +80,7 @@ Azure में बनेगा:
 
 # 🧪 Example 2: Variables with Default Value
 
-
 यदि हम variable को default value देना चाहें तो ऐसा कर सकते हैं।
-
 
 We can assign default values to variables.
 
@@ -95,16 +90,16 @@ We can assign default values to variables.
 
 ```hcl
 variable "environment" {
-
   description = "Environment name"
   type        = string
   default     = "dev"
 }
 ```
 
-अब main.tf में: ${} Interpoletion use karenge
+### main.tf
 
 ```hcl
+# Variable interpolation का उपयोग
 name = "rg-${var.environment}"
 ```
 
@@ -114,9 +109,7 @@ name = "rg-${var.environment}"
 
 # 🧪 Example 3: Conditional Expression
 
-
 यदि environment prod है तो अलग नाम, अन्यथा अलग नाम।
-
 
 We can apply conditional logic.
 
@@ -133,9 +126,7 @@ name = var.environment == "prod" ? "rg-production" : "rg-development"
 
 # 🧪 Example 4: Built-in Function (upper)
 
-
 हम नाम को uppercase में बदल सकते हैं।
-
 
 We can transform strings using built-in functions.
 
@@ -151,85 +142,92 @@ RG-DEVOPS-DEMO
 
 ---
 
+# 🧪 Example 5: lower() (Azure Important)
+
+Azure में Storage Account का नाम lowercase होना अनिवार्य है।
+
+Azure Storage Account names must be lowercase.
+
+```hcl
+resource "azurerm_storage_account" "sa" {
+  name = lower("MyStorageDemo123")
+}
+```
+
+Output:
+
+mystoragedemo123
+
+---
+
 # 📌 What You Learned
 
 ✔ count से multiple resources  
 ✔ Variables में default value  
 ✔ Conditional logic  
-✔ Built-in functions  
-✔ Dynamic naming and Expression
+✔ Built-in functions (upper, lower)  
+✔ Dynamic naming and Expressions  
 
 ---
 
-# ☁️ Terraform for Azure: Interview Questions & Answers
-
-This document focuses on Terraform concepts applied specifically to Azure infrastructure.
 # ☁️ Terraform Azure Interview Q&A (Easy Hinglish)
 
 ---
 
-### 1. What is the difference between `count` and `for_each`?
-**प्रश्न: `count` और `for_each` में क्या अंतर है?**
+### 1. What is count in Terraform?
 
-*   **`count`**: 
-    *   जब आपको एक जैसी (identical) कई चीज़ें बनानी हों, तब `count` का यूज़ होता है।
-    *   जैसे: Azure में 3 एक जैसे Virtual Machines (VM) बनाने हैं।
-    *   **नुकसान**: अगर आप बीच में से कोई VM डिलीट करोगे, तो Terraform बाकी VMs को भी हिला देता है (index बदल जाता है)।
+`count` multiple identical resources बनाने के लिए उपयोग होता है।
 
-*   **`for_each`**: 
-    *   जब आपको अलग-अलग नाम या कॉन्फ़िगरेशन वाली चीज़ें बनानी हों।
-    *   जैसे: 3 अलग-अलग नाम के Storage Accounts।
-    *   **फायदा**: इसमें हर resource की अपनी एक पहचान (Key) होती है। एक डिलीट करने पर दूसरों पर कोई असर नहीं पड़ता।
+It is used to create multiple identical resources.
+
+⚠ Limitation: Index based tracking होने के कारण बीच का resource हटाने पर recreation हो सकता है।
 
 ---
 
 ### 2. How do Conditional Expressions work?
-**प्रश्न: Conditional expression कैसे काम करता है?**
 
-यह बिल्कुल `if-else` की तरह काम करता है। इसका फार्मूला है: `condition ? true : false`
+Syntax: `condition ? true : false`
 
-*   **Azure Example**: 
-    मान लो आप चाहते हो कि Public IP सिर्फ "Prod" environment में बने, "Dev" में नहीं।
-    *   `count = var.env == "prod" ? 1 : 0`
-    *   (अगर env 'prod' है, तो 1 बनाओ, वरना 0 यानी कुछ मत बनाओ)।
+Azure Example:
+
+```hcl
+count = var.env == "prod" ? 1 : 0
+```
+
+अगर env = prod → 1 resource  
+अन्यथा → 0 resource  
 
 ---
 
-### 3. When is the Default Variable value used?
-**प्रश्न: Default variable value कब उपयोग होती है?**
+### 3. When is Default Variable value used?
 
-जब हम variable की कोई value बाहर से (command line या .tfvars फ़ाइल से) नहीं देते, तब Terraform ऑटोमैटिक **Default value** उठा लेता है।
+जब variable की value बाहर से provide नहीं की जाती, तब default value उपयोग होती है।
 
-*   **Azure Example**: 
-    आपने variable बनाया `location` और default दी `East US`। अगर deployment के टाइम आपने location नहीं बताई, तो Terraform अपने आप उसे `East US` में बना देगा। यह code को फटने (error) से बचाता है।
+If no value is passed externally, Terraform uses the default value.
 
 ---
 
 ### 4. Why are Terraform Functions used?
-**प्रश्न: Terraform functions का उपयोग क्यों किया जाता है?**
 
-Terraform functions का काम डेटा को "Modify" या "Calculate" करना है ताकि हमें बार-बार हाथ से कोडिंग न करनी पड़े।
+Terraform functions data को modify या calculate करने के लिए उपयोग होती हैं।
 
-*   **आसान उदहारण (Examples)**:
-    *   **`lower()`**: Azure में Storage Account का नाम हमेशा **lowercase** (छोटी ABC) में होना चाहिए। अगर user ने गलती से "MyStorage" लिख दिया, तो `lower()` function उसे अपने आप "mystorage" कर देगा ताकि error न आये।
-    *   **`lookup()`**: एक लिस्ट में से सही चीज़ चुनना। जैसे: अगर "Windows" है तो "2019-Datacenter" image उठाओ, अगर "Linux" है तो "Ubuntu" उठाओ।
-    *   **`join()`**: दो शब्दों को जोड़कर एक नाम बनाना। जैसे: "ProjectName" + "Resource" = "ProjectName-Resource"。
-    *   **`cidrsubnet()`**: यह function अपने आप calculate करता है कि आपके VNet के अंदर Subnet की IP Range क्या होगी। आपको खुद हिसाब नहीं लगाना पड़ता।
+Examples:
+
+- `lower()` → Storage account lowercase बनाना
+- `upper()` → Display formatting
+- `join()` → Name combine करना
+- `lookup()` → Map से value निकालना
+- `cidrsubnet()` → Subnet IP calculation
 
 ---
 
-
-### Key Azure Resource Reference Table
-
+# Key Azure Resource Reference Table
 
 | Feature | Azure Resource Example |
-| :--- | :--- |
-| **Logic** | `azurerm_resource_group` |
-| **Iteration** | `azurerm_virtual_network` subnets |
-| **Naming** | `azurerm_storage_account` (must be unique/lowercase) |
-
----
-
+|----------|------------------------|
+| Logic | azurerm_resource_group |
+| Iteration | azurerm_virtual_network subnets |
+| Naming | azurerm_storage_account |
 
 ---
 
