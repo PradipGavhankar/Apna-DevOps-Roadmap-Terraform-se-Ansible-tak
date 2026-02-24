@@ -1,25 +1,27 @@
-# 📦 Module 1 – Terraform Basics (Provider + Resource Group)
+# 🚀 DevOps Terraform Roadmap – 5 Core Modules (Hinglish Edition)
 
 ---
 
+# 📦 Module 1 – Provider aur Resource Group
+
 ## 🟢 पहले हिन्दी में आसान समझ
 
-Terraform ek Infrastructure as Code tool hai jisse hum cloud resources code ke through bana sakte hain.
+Terraform ek Infrastructure as Code tool hai jisse hum Azure me resources code se bana sakte hain.
 
 Is module me hum:
+- Azure provider configure karenge
+- Ek Resource Group create karenge
 
-- Provider configure karenge
-- Resource Group create karenge
+Matlab: Portal se nahi, code se infrastructure banega 💪
 
 ---
 
 ## 🔵 English Explanation
 
-Terraform allows you to provision infrastructure using code.
+Terraform is an Infrastructure as Code tool used to provision Azure resources using code.
 
 In this module:
-
-- We configure Azure provider
+- We configure the Azure provider
 - Create a Resource Group
 
 ---
@@ -31,7 +33,7 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "~>3.0" # version constraint
+      version = "~>3.0"  # version constraint lagana zaruri hai
     }
   }
 }
@@ -41,8 +43,8 @@ provider "azurerm" {
 }
 
 resource "azurerm_resource_group" "rg" {
-  name     = "rg-devops-demo"   # resource group ka naam
-  location = "East US"          # region
+  name     = "rg-devops-demo"  # resource group ka naam
+  location = "East US"         # region
 }
 ```
 
@@ -50,25 +52,24 @@ resource "azurerm_resource_group" "rg" {
 
 ## ✅ Good Practice
 
-- Version constraint use karo
-- Naming standard follow karo
-- Code ko Git me maintain karo
+- Version constraint lagao  
+- Naming standard follow karo  
+- Code Git me rakho  
 
 ---
 
 ## ❌ Bad Practice
 
-- Version specify na karna
-- Hardcoded random names
-- Manual portal changes
+- Version specify na karna  
+- Random naam rakh dena  
+- Portal se manually change karna  
 
 ---
 
 ## 😂 Thoda DevOps Comedy
 
-Junior: "Sir portal se bana du?"
-
-Senior: "Nahi beta, warna Terraform ro dega 😆"
+Junior: "Sir portal se bana du?"  
+Senior: "Nahi beta, warna Terraform bolega – mujhe kyun laaye ho 😄"
 
 ---
 
@@ -80,32 +81,39 @@ Apply complete! Resources: 1 added, 0 changed, 0 destroyed.
 
 ---
 
-## ✅ Production Ready Mindset
+## ✅ Good Practice (Production Ready Mindset)
 
 ✔ Always use version constraint  
-✔ Variables use karo  
+✔ Variables use karo, hardcoding mat karo  
 ✔ terraform plan production me mandatory  
 ✔ Remote backend use karo  
 
-## ❌ Danger Zone
+---
+
+## ❌ Bad Practice (Danger Zone)
 
 ❌ Hardcoded subscription ID  
 ❌ Direct apply in production  
 ❌ No version control  
-
-# 🌐 Module 2 – Variables & Outputs
+❌ Portal se manually change karna  
 
 ---
 
+# 🌐 Module 2 – Variables aur Outputs
+
 ## 🟢 पहले हिन्दी में आसान समझ
 
-Variables se hum reusable aur flexible code likhte hain.
+Variables use karne se code flexible aur reusable ban jata hai.
+
+Output se hum resource ki info dekh sakte hain.
 
 ---
 
 ## 🔵 English Explanation
 
-Variables make Terraform configurations reusable and dynamic.
+Variables make Terraform configurations reusable and flexible.
+
+Outputs display resource values after execution.
 
 ---
 
@@ -119,7 +127,7 @@ variable "location" {
 
 resource "azurerm_resource_group" "rg" {
   name     = "rg-devops-demo"
-  location = var.location   # variable use kiya
+  location = var.location   # yaha variable use kiya gaya hai
 }
 
 output "rg_name" {
@@ -131,27 +139,27 @@ output "rg_name" {
 
 ## ✅ Good Practice
 
-- Variables file separate rakho
-- Sensitive data mark karo
+- Variables alag file me rakho  
+- Sensitive values hide karo  
+- tfvars file use karo  
 
 ---
 
 ## ❌ Bad Practice
 
-- Hardcoded region
-- Secrets plain text me
+- Sab kuch hardcode kar dena  
+- Password Git me daal dena  
 
 ---
 
 ## 😂 DevOps Comedy
 
-"Code reusable nahi hai?"
-
-"Kyuki tumne sab hardcode kiya hai bhai 😆"
+"Har project me region change karna pad raha hai 😩"  
+"Kyunki tumne variable use hi nahi kiya 😄"
 
 ---
 
-## 🚀 Real Output
+## 🚀 Real Output Example
 
 ```
 Outputs:
@@ -160,34 +168,41 @@ rg_name = rg-devops-demo
 
 ---
 
-## ✅ Production Ready Mindset
+## ✅ Good Practice (Production Ready Mindset)
 
-✔ Variables use karo  
-✔ Secrets ke liye tfvars use karo  
-✔ Plan before apply  
-
-## ❌ Danger Zone
-
-❌ Password Git me push karna  
-❌ Hardcoded values  
-
-# 🧠 Module 3 – State Management
+✔ Variables use karo hardcoding mat karo  
+✔ terraform plan production me mandatory  
+✔ Version constraint lagao  
 
 ---
 
+## ❌ Bad Practice (Danger Zone)
+
+❌ Hardcoded values  
+❌ Direct apply in production  
+❌ No version control  
+
+---
+
+# 🧠 Module 3 – Terraform State aur Remote Backend
+
 ## 🟢 पहले हिन्दी में आसान समझ
 
-Terraform state file infrastructure ki actual condition store karti hai.
+State file batati hai ki actual cloud me kya bana hua hai.
+
+Team environment me state ko local machine pe nahi, remote backend me rakhna chahiye.
 
 ---
 
 ## 🔵 English Explanation
 
-Terraform state keeps track of real infrastructure.
+Terraform state tracks real infrastructure.
+
+Remote backend is required for team collaboration.
 
 ---
 
-## 🧱 Simple Code
+## 🧱 Simple Code (Hindi Comments)
 
 ```hcl
 terraform {
@@ -204,27 +219,27 @@ terraform {
 
 ## ✅ Good Practice
 
-- Remote backend use karo
-- State lock enable karo
+- Remote backend use karo  
+- State secure rakho  
+- Team me state lock enable karo  
 
 ---
 
 ## ❌ Bad Practice
 
-- Local state use in team
-- State file Git me commit karna
+- Local state team me use karna  
+- State file GitHub me push karna  
 
 ---
 
 ## 😂 DevOps Comedy
 
-"State file delete ho gayi 😭"
-
-"Ab terraform bhi confuse hai aur tum bhi 😆"
+"State file delete ho gayi 😭"  
+"Ab Terraform bhi bolega – main kya karu bhai 😄"
 
 ---
 
-## 🚀 Real Output
+## 🚀 Real Output Example
 
 ```
 Successfully configured the backend "azurerm"
@@ -232,33 +247,39 @@ Successfully configured the backend "azurerm"
 
 ---
 
-## ✅ Production Ready Mindset
+## ✅ Good Practice (Production Ready Mindset)
 
+✔ State file Git me commit mat karo  
 ✔ Remote backend mandatory  
-✔ State ko secure rakho  
-
-## ❌ Danger Zone
-
-❌ State GitHub me push karna  
-❌ Local laptop pe production state  
-
-# 🏗 Module 4 – Modules
+✔ terraform plan production me mandatory  
 
 ---
 
+## ❌ Bad Practice (Danger Zone)
+
+❌ State file GitHub me push karna  
+❌ Direct apply in production  
+❌ No version control  
+
+---
+
+# 🏗 Module 4 – Terraform Modules
+
 ## 🟢 पहले हिन्दी में आसान समझ
 
-Modules reusable Terraform blocks hote hain.
+Modules reusable blocks hote hain.
+
+Isse code clean, structured aur professional ban jata hai.
 
 ---
 
 ## 🔵 English Explanation
 
-Modules allow reusable and structured Terraform code.
+Modules help structure and reuse Terraform configurations.
 
 ---
 
-## 🧱 Simple Code
+## 🧱 Simple Code (Hindi Comments)
 
 ```hcl
 module "rg" {
@@ -272,27 +293,27 @@ module "rg" {
 
 ## ✅ Good Practice
 
-- Reusable modules banao
-- Folder structure maintain karo
+- Code ko modules me divide karo  
+- Proper folder structure rakho  
+- Reusable design rakho  
 
 ---
 
 ## ❌ Bad Practice
 
-- Sab code ek hi file me likhna
-- Copy paste repetition
+- Sab kuch ek hi file me likh dena  
+- Copy paste karte rehna  
 
 ---
 
 ## 😂 DevOps Comedy
 
-"Module use nahi karunga."
-
-"Fir har project me copy paste karte rehna 😆"
+"Module kyun banaun?"  
+"Taaki future me khud ko gaali na deni pade 😄"
 
 ---
 
-## 🚀 Real Output
+## 🚀 Real Output Example
 
 ```
 module.rg.azurerm_resource_group.rg: Creation complete
@@ -300,66 +321,74 @@ module.rg.azurerm_resource_group.rg: Creation complete
 
 ---
 
-## ✅ Production Ready Mindset
+## ✅ Good Practice (Production Ready Mindset)
 
-✔ Modular architecture  
-✔ Versioned modules  
-
-## ❌ Danger Zone
-
-❌ Repeated code  
-❌ No structure  
-
-# 🤖 Module 5 – Terraform + Ansible Integration
+✔ Modular architecture use karo  
+✔ Version control maintain karo  
+✔ terraform plan production me mandatory  
 
 ---
 
+## ❌ Bad Practice (Danger Zone)
+
+❌ No version control  
+❌ Direct apply in production  
+❌ Portal se manually change karna  
+
+---
+
+# 🤖 Module 5 – Terraform + Ansible Integration
+
 ## 🟢 पहले हिन्दी में आसान समझ
 
-Terraform infra banata hai.  
-Ansible configuration karta hai.
+Terraform infrastructure banata hai.  
+Ansible server configuration karta hai.
+
+Dono ka role alag hai, mix mat karo.
 
 ---
 
 ## 🔵 English Explanation
 
-Terraform provisions infrastructure.  
-Ansible configures servers.
+Terraform provisions infrastructure.
+
+Ansible configures servers after provisioning.
 
 ---
 
-## 🧱 Simple Flow Example
+## 🧱 Simple Flow Example (Hindi Comments)
 
 ```bash
-terraform apply
-ansible-playbook playbook.yml
+terraform apply         # pehle infrastructure banega
+ansible-playbook site.yml   # phir configuration hogi
 ```
 
 ---
 
 ## ✅ Good Practice
 
-- Clear separation of responsibilities
-- Inventory dynamic rakho
+- Infra aur configuration alag rakho  
+- Manual SSH avoid karo  
+- Automation complete rakho  
 
 ---
 
 ## ❌ Bad Practice
 
-- Terraform se configuration karna
-- Ansible se infra banana
+- Terraform se software install karna  
+- Ansible se VM create karna  
+- Manual server changes  
 
 ---
 
 ## 😂 DevOps Comedy
 
-"Terraform se package install kar raha ho?"
-
-"Role confuse ho gaya kya? 😆"
+"Terraform se nginx install karu?"  
+"Role clarity naam ki bhi koi cheez hoti hai 😄"
 
 ---
 
-## 🚀 Real Output
+## 🚀 Real Output Example
 
 ```
 PLAY RECAP
@@ -368,13 +397,7 @@ server1 : ok=5 changed=2 failed=0
 
 ---
 
-## ✅ Production Ready Mindset
+# 🏁 Final DevOps Rule
 
-✔ Infra + Config separation  
-✔ CI/CD integration  
-
-## ❌ Danger Zone
-
-❌ Manual SSH changes  
-❌ No automation  
-
+Automation + Version Control + Review Process  
+= Safe Production Infrastructure 🚀
