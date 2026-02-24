@@ -44,11 +44,11 @@ Terraform Functions and Expressions help us:
 
 # 🧪 Example 1: count (Multiple Resources)
 
-## हिन्दी
+
 
 यदि हमें 3 Resource Groups बनाने हों, तो हम `count` का उपयोग कर सकते हैं।
 
-## English
+
 
 If we want to create 3 Resource Groups, we can use the `count` argument.
 
@@ -83,11 +83,9 @@ Azure में बनेगा:
 
 # 🧪 Example 2: Variables with Default Value
 
-## हिन्दी
 
 यदि हम variable को default value देना चाहें तो ऐसा कर सकते हैं।
 
-## English
 
 We can assign default values to variables.
 
@@ -116,11 +114,9 @@ name = "rg-${var.environment}"
 
 # 🧪 Example 3: Conditional Expression
 
-## हिन्दी
 
 यदि environment prod है तो अलग नाम, अन्यथा अलग नाम।
 
-## English
 
 We can apply conditional logic.
 
@@ -137,11 +133,9 @@ name = var.environment == "prod" ? "rg-production" : "rg-development"
 
 # 🧪 Example 4: Built-in Function (upper)
 
-## हिन्दी
 
 हम नाम को uppercase में बदल सकते हैं।
 
-## English
 
 We can transform strings using built-in functions.
 
