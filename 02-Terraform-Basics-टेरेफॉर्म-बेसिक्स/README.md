@@ -8,13 +8,11 @@ Terraform is a powerful Infrastructure as Code (IaC) tool used to automate Azure
 
 ## 🧠 Terraform क्या है?
 
-Terraform एक open-source tool है जो हमें Azure cloud infrastructure को code के माध्यम से define, provision और manage करने की सुविधा देता है।
+Terraform एक open-source Infrastructure as Code tool है जो हमें Azure cloud infrastructure को code के माध्यम से define, provision और manage करने की सुविधा देता है।
 
-Terraform is an open-source tool that allows us to define, provision, and manage Azure cloud infrastructure using code.
+Terraform is an open-source Infrastructure as Code (IaC) tool that allows us to define, provision, and manage Azure cloud infrastructure using code.
 
 मतलब Azure Resource Group, Virtual Machine, VNet — सब कुछ code से control कर सकते हैं।
-
-That means Azure Resource Groups, Virtual Machines, and VNets can all be controlled using code.
 
 ---
 
@@ -23,9 +21,6 @@ That means Azure Resource Groups, Virtual Machines, and VNets can all be control
 Azure Portal से manually resources create करना possible है…
 
 लेकिन production environment में यह scalable नहीं है।
-
-Creating resources manually from Azure Portal is possible,  
-but it is not scalable in production environments.
 
 अगर 20 VMs manually बनाओगे तो mistakes guaranteed हैं 😅
 
@@ -38,271 +33,227 @@ Terraform Azure infrastructure को:
 
 ---
 
+# 🧱 Terraform Syntax & Block Structure
+
+Terraform configuration **Blocks** और **Arguments** से मिलकर बनती है।
+
+---
+
+## 🔹 Block Structure (Basic Syntax)
+
+```hcl
+block_type "label1" "label2" {
+  argument_name = value
+}
+```
+
+Blocks infrastructure components define करते हैं।
+
+---
+
+## 🔹 Types of Blocks
+
+### 1️⃣ Single Name Block
+
+Used once per configuration file.
+
+```hcl
+terraform {
+  required_version = ">= 1.0.0"
+}
+```
+
+Purpose:
+- Defines Terraform settings
+- Specifies version constraints
+
+---
+
+### 2️⃣ Block with One Label
+
+```hcl
+provider "azurerm" {
+  features {}
+}
+```
+
+Explanation:
+- `provider` → block type  
+- `"azurerm"` → label  
+
+Used to configure cloud providers.
+
+---
+
+### 3️⃣ Block with Two Labels
+
+```hcl
+resource "azurerm_resource_group" "rg" {
+  name     = "rg-demo"
+  location = "Central India"
+}
+```
+
+Explanation:
+- `resource` → block type  
+- `"azurerm_resource_group"` → resource type  
+- `"rg"` → user-defined name  
+
+This is most commonly used block in Terraform.
+
+---
+
+## 🔹 Arguments
+
+Arguments define properties inside blocks.
+
+Example:
+
+```hcl
+name     = "rg-demo"
+location = "Central India"
+```
+
+Argument Types:
+
+- string  
+- number  
+- bool  
+- list  
+- map  
+- set  
+
+Arguments can be:
+- Required  
+- Optional  
+
+---
+
 ## 🔄 Terraform Workflow (Azure Context)
 
 Terraform Azure के साथ 4 main steps में काम करता है:
 
 ### 1️⃣ terraform init
-
-Azure provider download करता है।
-
-Initializes the project and downloads the Azure provider.
-
----
+- Initializes project  
+- Downloads Azure provider  
 
 ### 2️⃣ terraform plan
-
-Azure में कौन-कौन से resources create होंगे, उसका preview दिखाता है।
-
-Shows what Azure resources will be created, modified, or destroyed.
-
-(Production में यह step skip करना मतलब risk लेना 👀)
-
----
+- Preview दिखाता है क्या create / modify / destroy होगा  
 
 ### 3️⃣ terraform apply
-
-Azure subscription में actual resources create करता है।
-
-Creates the actual resources inside the Azure subscription.
-
-यही वो moment है जब bill भी शुरू हो सकता है 😎
-
----
+- Azure subscription में actual resources create करता है  
 
 ### 4️⃣ terraform destroy
-
-Azure resources delete करता है।
-
-Destroys Azure resources.
-
-Lab environment में best friend 😅
+- Azure resources delete करता है  
 
 ---
 
 ## 🗂️ Basic Azure Terraform File Structure
 
-एक basic Azure Terraform project में ये files होती हैं:
+A basic Azure Terraform project contains:
 
 - `provider.tf` → Azure provider configuration  
-- `main.tf` → Azure resources definition  
-- `variables.tf` → input variables  
-- `outputs.tf` → output values  
-- `terraform.tfvars` → variable values  
+- `main.tf` → Resource definitions  
+- `variables.tf` → Input variables  
+- `outputs.tf` → Output values  
+- `terraform.tfvars` → Variable values  
 
 ---
 
-## 🌍 Modern Industry Sync (Azure DevOps Reality 2026)
+# 🧪 Example: Azure Resource Group Creation (Step-by-Step)
 
-आज Azure + Terraform use होता है:
-
-- Azure Virtual Machine provisioning  
-- Azure Kubernetes Service (AKS) automation  
-- Azure DevOps CI/CD pipelines  
-- Multi-region infrastructure deployment  
-- Enterprise Landing Zone setup  
-
-In enterprise Azure environments, Infrastructure as Code is mandatory.
-
----
-
-## 🏗 Real-World Scenario (Azure Example)
-
-मान लीजिए company को:
-
-- Dev environment  
-- Staging environment  
-- Production environment  
-
-तीनों में same infrastructure चाहिए।
-
-Terraform के माध्यम से एक ही configuration से तीनों environment deploy किए जा सकते हैं।
-
-Without Terraform?  
-Portal में click-click-click marathon 😅
-
----
-
-## 🧠 Quick Summary
-
-- Terraform = Azure automation tool  
-- Azure Portal = Manual method  
-- Terraform = Scalable + Repeatable + DevOps friendly  
-- 4 Commands = init, plan, apply, destroy  
-
----
-
-## 😎 DevOps Reality Note
-
-अगर Azure में अभी भी manually resources बना रहे हो…
-
-तो Terraform सीखना जरूरी है —  
-वरना future में सिर्फ resource group delete करने का काम मिलेगा 😅
-
----
-
-# 🧪 उदाहरण: Azure में Resource Group बनाना (Step-by-Step)
-
-## 🔹 1. हिन्दी में समझें
-
-इस उदाहरण में हम Terraform की सहायता से Azure में एक Resource Group बनाएंगे।
-
-Resource Group Azure में एक logical container होता है जिसमें हम Virtual Machine, Storage Account, Network आदि संसाधनों को रखते हैं।
-
-Terraform क्या करेगा?
-
-- Azure से जुड़ेगा
-- Resource Group की configuration पढ़ेगा
-- पहले बताएगा क्या बनने वाला है (Plan)
-- फिर वास्तव में बना देगा (Apply)
-
----
-
-## 🔹 2. Understand in English
-
-In this example, we will create an Azure Resource Group using Terraform.
-
-A Resource Group in Azure is a logical container that holds resources like Virtual Machines, Storage Accounts, and Networks.
-
-Terraform will:
-
-- Connect to Azure
-- Read the configuration
-- Show what will be created (Plan)
-- Then actually create it (Apply)
-
----
-
-## 🔹 3. Required Files and Code
-
----
-
-### 📄 provider.tf
+## 🔹 provider.tf
 
 ```hcl
-# Terraform configuration block
 terraform {
-
-  # Required providers list
   required_providers {
-
-    # Azure Resource Manager provider
     azurerm = {
-
-      # Official HashiCorp provider source
       source  = "hashicorp/azurerm"
-
-      # Version constraint (3.x versions allowed)
       version = "~> 3.0"
     }
   }
 }
 
-# Azure provider configuration
 provider "azurerm" {
-
-  # Mandatory empty block
   features {}
 }
 ```
 
 ---
 
-### 📄 variables.tf
+## 🔹 variables.tf
 
 ```hcl
-# Variable for Resource Group name
 variable "resource_group_name" {
-
-  # Description of variable
   description = "Azure Resource Group ka naam"
-
-  # Data type string
-  type = string
+  type        = string
 }
 
-# Variable for Azure location
 variable "location" {
-
-  description = "Azure region jahan resource banega"
-
-  type = string
+  description = "Azure region"
+  type        = string
 }
 ```
 
 ---
 
-### 📄 main.tf
+## 🔹 main.tf
 
 ```hcl
-# Azure Resource Group creation block
 resource "azurerm_resource_group" "rg" {
-
-  # Name taken from variable
-  name = var.resource_group_name
-
-  # Location taken from variable
+  name     = var.resource_group_name
   location = var.location
 }
 ```
 
 ---
 
-### 📄 terraform.tfvars
+## 🔹 terraform.tfvars
 
 ```hcl
-# Actual values provided here
-
 resource_group_name = "rg-devops-demo"
 location            = "Central India"
 ```
 
 ---
 
-### 📄 outputs.tf
+## 🔹 outputs.tf
 
 ```hcl
-# Output block to display Resource Group ID
 output "resource_group_id" {
-
   value = azurerm_resource_group.rg.id
 }
 ```
 
 ---
 
-## 🔹 4. Terraform Commands
+## 🔹 Terraform Commands
 
-### Initialize project
+### Initialize
 
 ```
 terraform init
 ```
 
-### See execution plan
+### Plan
 
 ```
 terraform plan
 ```
 
-Expected output example:
+Expected Output:
 
 ```
 Plan: 1 to add, 0 to change, 0 to destroy.
 ```
 
-Meaning:
-- 1 new resource will be created
-- No changes
-- Nothing will be destroyed
-
-### Apply configuration
+### Apply
 
 ```
 terraform apply
 ```
 
-### Destroy resources (if needed)
+### Destroy
 
 ```
 terraform destroy
@@ -310,13 +261,33 @@ terraform destroy
 
 ---
 
-## 🔹 5. What You Learned
+## 🌍 Modern Industry Usage (Azure DevOps Reality)
 
-✔ Terraform connects to Azure  
-✔ Configuration files define infrastructure  
-✔ Variables make code reusable  
-✔ Plan shows preview  
-✔ Apply creates resources  
+Azure + Terraform commonly used for:
+
+- Virtual Machine provisioning  
+- Azure Kubernetes Service (AKS) automation  
+- CI/CD pipelines  
+- Multi-region deployments  
+- Enterprise Landing Zones  
+
+Infrastructure as Code is mandatory in enterprise environments.
 
 ---
 
+## 🧠 Quick Summary
+
+- Terraform = Azure automation tool  
+- Terraform uses Blocks & Arguments  
+- 3 Block Types = Single, One-label, Two-label  
+- Core Commands = init, plan, apply, destroy  
+- Makes infrastructure scalable & repeatable  
+
+---
+
+## 😎 DevOps Reality Note
+
+अगर Azure में अभी भी manually resources बना रहे हो…
+
+तो Terraform सीखना जरूरी है 😄  
+DevOps world में automation ही future है।
