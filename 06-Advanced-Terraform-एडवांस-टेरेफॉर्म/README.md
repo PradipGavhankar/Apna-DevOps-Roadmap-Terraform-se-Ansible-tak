@@ -17,7 +17,7 @@
                         │       │                        │
                    dynamic block│                        │
                         │       │                        │
-                   Automatic Tags│                        │
+                 Automatic Tags │                        │
                         │       │                        │
                         ▼       ▼                        ▼
                   Production Ready Azure Deployment
