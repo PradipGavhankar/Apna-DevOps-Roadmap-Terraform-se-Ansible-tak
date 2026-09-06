@@ -1,1 +1,20 @@
 prompt.md
+@"
+# Terraform
+**/.terraform/**
+*.tfstate
+*.tfstate.*
+*.tfstate.backup
+.terraform.lock.hcl
+crash.log
+override.tf
+*_override.tf
+
+# Binaries
+*.exe
+*.dll
+
+# OS
+.DS_Store
+Thumbs.db
+"@ | Out-File -FilePath .gitignore -Encoding utf8 -Force

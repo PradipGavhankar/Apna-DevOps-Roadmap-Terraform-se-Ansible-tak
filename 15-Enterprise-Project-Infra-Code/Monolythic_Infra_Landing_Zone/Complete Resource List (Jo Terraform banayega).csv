@@ -1,0 +1,15 @@
+Layer,Azure Resource,Purpose,Terraform me Status
+Foundation,Resource Group,Sab resources ka container,✅ Banega
+Networking,Virtual Network (10.10.0.0/16),Private network (VPC jaisa),✅ Banega
+,Subnet - frontend,WAF / API Gateway / Public access,✅ Banega
+,Subnet - application,Monolithic App + BFF + Logic,✅ Banega
+,Subnet - data,Database + Cache,✅ Banega
+,Subnet - management,Jump box / Monitoring / Management,✅ Banega
+Security,Network Security Group (NSG),Firewall rules,✅ Banega
+,Key Vault,Secrets + Encryption keys,✅ Banega
+Monitoring,Log Analytics Workspace,Logs + Monitoring,✅ Banega
+Storage,Storage Account,Diagnostics / Logs / General storage,✅ Banega
+Optional (Next),Application Gateway + WAF,Front-end entry point,Baad me add kar sakte ho
+,Azure SQL / PostgreSQL,Transactional Database,Baad me add kar sakte ho
+,Azure Cache for Redis,In-memory cache,Baad me add kar sakte ho
+,App Service / VM / Container,Actual application deploy,Baad me add kar sakte ho

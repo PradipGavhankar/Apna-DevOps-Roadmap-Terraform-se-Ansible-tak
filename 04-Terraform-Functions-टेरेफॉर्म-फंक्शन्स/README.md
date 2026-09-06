@@ -418,7 +418,9 @@ format("%s-%s-%s", "payment", "prod", "vm")
 Output:
 ```
 payment-prod-vm
-🚀 Production Example
+```
+### 🚀 Production Example
+```
 locals {
   vm_name = format(
     "%s-%s-%s",
@@ -668,6 +670,8 @@ output "dev_region" {
 dev_region = "West Europe"
 🔹 keys()
 
+Key is always string.
+
 Map की सभी keys निकालता है।
 ```
 variable "environment_map" {
@@ -683,14 +687,14 @@ output "environment_names" {
 }
 ```
 🔹 values()
-
+Value is anything.
 Map की सभी values निकालता है।
 ```
 output "regions" {
   value = values(var.environment_map)
 }
 ```
-🔹 merge()
+🔹 merge() — Production Tags के लिए बहुत important
 
 Multiple maps को combine करता है।
 ```
@@ -781,9 +785,9 @@ prod
 Terraform में condition के आधार पर value select करने के लिए conditional expression बहुत useful है।
 
 Syntax:
-
+```
 condition ? true_value : false_value
-
+```
 Example:
 ```
 variable "environment" {
@@ -810,6 +814,12 @@ Standard_B2s
 Terraform external files से data पढ़ सकता है।
 
 🔹 file()
+```hcl
+file("${path.module}/config.txt")
+fileexists("${path.module}/config.txt")
+templatefile("${path.module}/template.tpl", { env = var.environment })
+```
+
 ```
 output "config_file" {
   value = file("${path.module}/config.txt")
@@ -914,6 +924,19 @@ dev
 ### ☁️ Production-Style Azure Example
 
 अब Functions को Azure Resource Group के साथ use करते हैं।
+नीचे **real production pattern** दिया गया है।  
+यह pattern enterprise projects में बहुत common है।
+
+### File Structure
+```
+├── providers.tf
+├── variables.tf
+├── terraform.tfvars
+├── locals.tf
+├── main.tf
+├── outputs.tf
+└── versions.tf
+```
 
 ### variables.tf
 ```
@@ -1033,6 +1056,7 @@ resource "azurerm_resource_group" "rg2" {
   location = "West Europe"
 }
 ```
+
 you can write one resource block and create multiple Resource Groups using for_each.
 
 🔑 What can for_each use?
