@@ -725,6 +725,86 @@ enable_backup = true
 ```hcl
 enable_https_traffic_only = true
 ```
+
+## Terraform Conditional Expressions
+
+### Conditional Expression क्या होती है?
+
+Conditional expression किसी condition के result के आधार पर दो values में से एक value चुनती है।
+अगर condition `true` हो तो पहली value मिलती है; अगर `false` हो तो दूसरी value मिलती है।
+
+Terraform में सामान्य programming languages की तरह अलग `if` / `else` block नहीं लिखा जाता।
+इसके बजाय conditional expression का उपयोग होता है:
+
+```hcl
+condition ? value_if_true : value_if_false
+```
+
+### How it works
+
+The condition must evaluate to a Boolean (`true` or `false`). Terraform selects exactly one of the two result values. Both result values should have compatible types, such as two strings or two numbers.
+
+### Example: Choose a value by environment
+
+```hcl
+variable "environment" {
+  description = "Deployment environment"
+  type        = string
+  default     = "dev"
+}
+
+locals {
+  storage_replication = var.environment == "prod" ? "GRS" : "LRS"
+}
+
+output "storage_replication" {
+  value = local.storage_replication
+}
+```
+
+जब `environment` का value `prod` होगा, output `GRS` होगा। बाकी environments के लिए output `LRS` होगा।
+
+### Common comparison and logical operators
+
+| Operator | Meaning | Example |
+| --- | --- | --- |
+| `==` | बराबर / equal | `var.environment == "prod"` |
+| `!=` | बराबर नहीं / not equal | `var.environment != "dev"` |
+| `>` / `<` | बड़ा / छोटा | `var.vm_count > 2` |
+| `&&` | दोनों conditions true हों / AND | `var.environment == "prod" && var.enable_backup` |
+| `||` | कोई एक condition true हो / OR | `var.environment == "qa" || var.environment == "prod"` |
+| `!` | condition उलटना / NOT | `!var.enable_public_ip` |
+
+### Example: Create a resource only when enabled
+
+Boolean variable के साथ conditional expression को `count` में लगाकर resource को create या skip किया जा सकता है:
+
+```hcl
+variable "enable_public_ip" {
+  description = "Whether the public IP should be created"
+  type        = bool
+  default     = false
+}
+
+resource "azurerm_public_ip" "example" {
+  count = var.enable_public_ip ? 1 : 0
+
+  name                = "example-public-ip"
+  resource_group_name = azurerm_resource_group.RG.name
+  location            = azurerm_resource_group.RG.location
+  allocation_method   = "Static"
+  sku                 = "Standard"
+}
+```
+
+- `enable_public_ip = true` होने पर `count = 1`, इसलिए एक public IP बनेगा।
+- `enable_public_ip = false` होने पर `count = 0`, इसलिए public IP resource नहीं बनेगा।
+- यह `count` वाला pattern छोटे conditional resource groups के लिए उपयोगी है। कई named resources या input collection के लिए `for_each` बेहतर हो सकता है; उसे आगे पढ़ेंगे।
+
+### Quick practice
+
+`environment` variable के आधार पर `prod` में `"Standard_D4s_v5"` और बाकी environments में `"Standard_B2s"` लौटाने वाली conditional expression लिखें।
+
 ## Collection Types
 ---
 
