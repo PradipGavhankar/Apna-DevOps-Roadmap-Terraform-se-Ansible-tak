@@ -6,7 +6,7 @@
 **Cloud:** Microsoft Azure  
 **Design:** Single Terraform root module with resource definitions split into focused `.tf` files
 
-> **Important:** This README is an architecture and deployment guide. Resource names and CIDRs are examples. Review the Terraform files, Azure region/SKU availability, subscription permissions, network overlaps, and estimated cost before running `terraform apply`. Optional components described here are not created unless their Terraform resources are implemented and enabled.
+> **Important:** Review Azure region/SKU availability, subscription permissions, network overlaps, and estimated cost before running `terraform apply`. The Terraform configuration deploys a private Linux VM backend and a WAF_v2 Application Gateway.
 
 ---
 
@@ -31,18 +31,18 @@ This project describes a centralized Azure foundation for a monolithic applicati
 
 मान लो हमारी application एक बड़ी company application है। इसमें web/mobile users, business logic, database और cache जैसे parts हैं। Application monolithic हो सकती है, लेकिन network को अलग-अलग tiers में बाँटने से security और operations बेहतर तरीके से manage किए जा सकते हैं।
 
-- **Frontend tier:** Users का HTTPS traffic receive करता है। Production में Application Gateway + WAF को entry point बनाया जा सकता है।
-- **Application tier:** Monolithic application, Backend-for-Frontend (BFF) और business logic यहाँ host किए जा सकते हैं।
+- **Frontend tier:** Users का HTTPS traffic WAF_v2 Application Gateway receive करता है; HTTP requests HTTPS पर redirect होती हैं।
+- **Application tier:** Private Linux VM पर sample Nginx backend host होता है; inbound HTTP केवल Application Gateway subnet से allow है।
 - **Data tier:** Database और cache के लिए isolated network boundary रखी जाती है।
 - **Management tier:** Administrative access, monitoring और operational tools के लिए।
 - **Security:** NSG, Key Vault, Azure RBAC, managed identities और private connectivity.
 - **Monitoring:** Log Analytics और resource diagnostic settings.
 
-**ध्यान दें:** केवल subnet बना देने से application, database, Redis या WAF deploy नहीं हो जाते। उनके लिए अलग Azure resources, routing, security rules, DNS और configuration चाहिए।
+**ध्यान दें:** यह एक hardened sample Linux VM deploy करता है, पूर्ण monolithic application नहीं। Database और Redis के लिए अलग Azure resources, private networking, DNS और configuration चाहिए।
 
 ## 3. English explanation
 
-A monolithic application packages much of its business functionality into one deployable application. Its infrastructure can still use network segmentation and managed Azure services. The landing zone establishes foundational networking, security, monitoring, and storage. Workload services—such as Application Gateway, App Service/VM/containers, SQL/PostgreSQL, and Redis—must be added and configured explicitly.
+A monolithic application packages much of its business functionality into one deployable application. This landing zone includes a private Ubuntu Linux VM backend, an HTTPS-only WAF_v2 Application Gateway, segmented networking, Key Vault, Log Analytics, and storage. The VM runs a sample Nginx health page; replace it with your application deployment.
 
 ---
 
@@ -51,7 +51,7 @@ A monolithic application packages much of its business functionality into one de
 ```mermaid
 flowchart TB
     U[Web users / Mobile users / Third parties]
-    WAF[Optional: Application Gateway WAF]
+    WAF[Application Gateway WAF v2]
     APIM[Optional: Azure API Management]
     APP[Monolithic application / BFF / business logic]
     CACHE[Optional: managed Redis cache]
@@ -61,10 +61,10 @@ flowchart TB
     ST[Storage Account for approved logs/data]
 
     subgraph VNET[Virtual Network: 10.10.0.0/16]
-      subgraph FRONT[Frontend subnet]
+      subgraph FRONT[Dedicated Application Gateway subnet]
         WAF
       end
-      subgraph APPLICATION[Application subnet]
+      subgraph APPLICATION[Private application subnet]
         APP
       end
       subgraph DATA[Data subnet]
@@ -98,12 +98,12 @@ flowchart TB
 | Diagram component | Azure implementation | Status in a foundation-only deployment |
 |---|---|---|
 | VPC | Virtual Network + subnets | Included when Terraform resources are configured |
-| Front-end access / WAF | Application Gateway WAF v2 + dedicated subnet | Optional; must be fully configured |
+| Front-end access / WAF | Application Gateway WAF v2 + dedicated subnet | Included; HTTPS requires a Key Vault PFX secret |
 | API gateway | Azure API Management, or Application Gateway for a different ingress use case | Optional; not interchangeable in every scenario |
-| Application logic | App Service, VM, Container Apps, or AKS in an application network design | Workload deployment required |
+| Application logic | Private Ubuntu Linux VM in the application subnet | Included with sample Nginx backend |
 | Shared database | Azure SQL / Azure Database for PostgreSQL + private endpoint/DNS where selected | Optional |
 | Cache | Azure Managed Redis / supported cache service | Optional; separate service and cost |
-| Security and management | NSGs, Key Vault, Azure RBAC, managed identity, Bastion if needed | Foundation/optional components |
+| Security and management | NSGs, Key Vault, Application Gateway managed identity | Included; VM has no public IP and no inbound SSH |
 | Monitoring and logging | Log Analytics + Azure Monitor diagnostic settings/alerts | Workspace alone does not automatically collect every resource log |
 | Diagnostics storage | Storage Account with appropriate lifecycle/access controls | Foundation; configure diagnostic destinations explicitly |
 
@@ -140,12 +140,15 @@ The exact resources created are determined by the `.tf` files in your project—
 ```text
 Resource Group: monolith-dev-rg
 └── Virtual Network: monolith-dev-vnet (10.10.0.0/16)
-    ├── frontend-snet     (10.10.1.0/24)  → Application Gateway subnet when enabled
-    ├── application-snet  (10.10.2.0/24)  → App/BFF/business logic network
+    ├── frontend-snet     (10.10.1.0/24)  → Reserved frontend network
+    ├── application-snet  (10.10.2.0/24)  → Private Linux VM backend
     ├── data-snet         (10.10.3.0/24)  → Data-service integration boundary
     └── management-snet   (10.10.4.0/24)  → Management access/tools
+    └── app_gateway-snet  (10.10.5.0/24)  → WAF_v2 Application Gateway
 
     ├── NSGs + subnet associations
+    ├── Private Ubuntu VM (SSH key only, no public IP)
+    ├── WAF_v2 Application Gateway (HTTPS + HTTP-to-HTTPS redirect)
     ├── Key Vault
     ├── Log Analytics Workspace
     └── Storage Account
@@ -154,11 +157,11 @@ Resource Group: monolith-dev-rg
 ### LLD design considerations
 
 1. **CIDR planning:** `10.10.0.0/16` and subnet ranges are examples. Check for overlaps with VPN, ExpressRoute, peered VNets, containers, and on-premises networks.
-2. **Application Gateway:** It requires a dedicated subnet. Add the actual gateway resource, WAF policy, frontend IP, listener, TLS certificate, backend pool, health probe, routing rule, and diagnostics.
-3. **NSGs:** Prefer specific source, destination, protocol, and port rules. Do not add blanket inbound `Any` rules. Application Gateway backend traffic should be allowed only from the intended gateway subnet and required ports.
+2. **Application Gateway:** It uses the dedicated `app_gateway` subnet, WAF Prevention mode, managed OWASP 3.2 rules, a Key Vault certificate, and an HTTP-to-HTTPS redirect. The backend pool targets the private Linux VM.
+3. **NSGs and egress:** The gateway subnet allows public web traffic and required Azure GatewayManager health traffic, then denies other inbound traffic. The application subnet allows backend HTTP only from the gateway subnet, has no inbound SSH, and denies other ingress/egress except DNS, HTTP/S package updates, and required Azure VM-agent connectivity. A NAT Gateway supplies stable outbound-only internet connectivity for the private VM. Use Bastion or private connectivity for administration.
 4. **Data tier:** A subnet alone does not host Azure SQL/PostgreSQL or managed Redis. Select the service and supported private networking model, then configure private endpoints/delegation, DNS, and firewall rules as required.
 5. **Private DNS:** Private endpoints require correct private DNS zones, VNet links, and resolution paths. A private endpoint by itself does not guarantee connectivity.
-6. **Key Vault:** Use Azure RBAC, least privilege, managed identities, soft delete, and purge protection according to policy. Never commit secret values.
+6. **Key Vault:** The gateway managed identity receives only `Get` and `List` secret permissions. Purge protection is enabled. Never commit certificate material or secret values.
 7. **Monitoring:** Create diagnostic settings on each supported resource. Configure retention, alerts, and destinations based on operational and compliance requirements.
 8. **Storage:** Enable HTTPS-only access, TLS 1.2 or stronger where supported, disable anonymous blob access, and restrict public network access after private access and DNS are tested.
 
@@ -281,15 +284,30 @@ Backend blocks cannot use ordinary Terraform input variables. Replace the exampl
 
 Run commands from the directory containing the Terraform root files.
 
-### Step 1 — Configure variables
+### Step 1 — Select an environment and configure inputs
 
-Create a local `terraform.tfvars` from the example:
+Use one environment root at a time. Each environment has an independent local Terraform state and explicit sizing defaults. Configure a secure remote backend and state locking before team use or any production deployment; do not share or commit local state:
+
+| Environment | Linux VM size | Application Gateway WAF_v2 autoscale |
+| --- | --- | --- |
+| `dev` | `Standard_B2s` | 1–2 instances |
+| `qa` | `Standard_D2s_v5` | 1–3 instances |
+| `prod` | `Standard_D2s_v5` | 2–10 instances |
+
+Select the environment from this directory:
 
 ```powershell
-Copy-Item .\terraform.tfvars.example .\terraform.tfvars
+Set-Location .\environments\dev # use qa or prod as required
 ```
 
-Edit values to match your environment. Keep the real `terraform.tfvars` out of Git.
+The VM requires the **full public key line** from `id_ed25519.pub` (it starts with `ssh-ed25519`); do not enter the `SHA256:...` fingerprint or share the private key. Set this and the versionless Key Vault secret URI for an already-imported PFX certificate:
+
+```powershell
+$env:TF_VAR_admin_ssh_public_key = (Get-Content "$HOME\.ssh\id_ed25519.pub" -Raw).Trim()
+$env:TF_VAR_app_gateway_certificate_secret_id = "https://<vault-name>.vault.azure.net/secrets/<certificate-name>/"
+```
+
+For first-time setup, the certificate must exist before the gateway can be deployed. From the selected environment root, run a reviewed targeted plan/apply for `module.landing_zone.azurerm_key_vault.main` and `module.landing_zone.azurerm_key_vault_access_policy.app_gateway`; import the PFX certificate into that Key Vault, then set the certificate's **versionless secret URI** above before planning the complete landing zone. Never use a placeholder URI for a full `terraform apply`. Treat every targeted operation as a bootstrap step and inspect its plan first.
 
 ### Step 2 — Format and initialize
 
@@ -298,7 +316,7 @@ terraform fmt -recursive
 terraform init
 ```
 
-If this is a brand-new local practice folder and you intentionally want a clean initialization, you may remove generated local metadata first:
+Run these commands from the selected environment root. If this is a brand-new local practice folder and you intentionally want a clean initialization, you may remove generated local metadata first:
 
 ```powershell
 Remove-Item -Recurse -Force .terraform -ErrorAction SilentlyContinue

@@ -8,12 +8,3 @@ terraform {
     }
   }
 }
-
-provider "azurerm" {
-  features {
-    key_vault {
-      purge_soft_delete_on_destroy = true #Jab Terraform Key Vault ko destroy karega, toh sirf "soft delete" (recovery ke liye 90 din) nahi karega — completely permanently delete karega
-    }
-  }
-}
-
