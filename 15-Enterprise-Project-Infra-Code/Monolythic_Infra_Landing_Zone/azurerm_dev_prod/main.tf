@@ -469,8 +469,6 @@ resource "azurerm_log_analytics_workspace" "main" {
 ############################
 # Key Vault (Encryption / Secrets)
 ############################
-data "azurerm_client_config" "current" {}
-
 resource "azurerm_key_vault" "main" {
   name                       = "${local.name_prefix}-kv"
   location                   = azurerm_resource_group.main.location
