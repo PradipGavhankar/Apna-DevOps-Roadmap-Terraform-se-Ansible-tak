@@ -1,11 +1,12 @@
-prompt.md
-@"
 # Terraform
+prompt.md
 **/.terraform/**
 *.tfstate
 *.tfstate.*
 *.tfstate.backup
-.terraform.lock.hcl
+*.tfvars
+*.tfvars.json
+*.tfplan
 crash.log
 override.tf
 *_override.tf
@@ -17,4 +18,3 @@ override.tf
 # OS
 .DS_Store
 Thumbs.db
-"@ | Out-File -FilePath .gitignore -Encoding utf8 -Force

@@ -1,5 +1,96 @@
 # Cloud Fundamentals – क्लाउड मूल तत्व
+# Imperative vs Declarative & Terraform Introduction
+# इम्पेरेटिव vs डिक्लेरेटिव और टेरेफॉर्म परिचय
 
+---
+
+## 1. Site / Application Chalane ke Different Tarike
+
+Koi bhi website ya application chalane ke liye mainly 4 options hote hain:
+
+1. **Personal PC / Laptop**
+2. **Killercoda** (Browser based free lab environment)
+3. **On-Premises Server**
+4. **Cloud** (AWS / Azure / Google Cloud)
+
+Cloud sabse powerful, scalable aur industry standard option hai.
+
+---
+
+## 2. Cloud pe Resources Banane ke 3 Approaches
+
+### A. Manual (Portal)
+- Azure Portal / AWS Console mein manually click karke resources banana
+- Beginners ke liye accha hai
+- Production mein scalable nahi hota
+
+### B. Imperative
+- Commands ek-ek karke chalana
+- Example: Azure CLI (`az` commands)
+- **Nature**: Single command at a time
+- Problem: Bahut saare resources hone par difficult + error prone + time consuming
+
+### C. Declarative (Recommended)
+- Desired state (kya chahiye) likh do
+- Tool khud dekh ke resources create / update / delete karta hai
+- Examples:
+  - **Terraform** (Multi-cloud + HCL) ★ Recommended
+  - Bicep (Azure only)
+  - ARM Templates (Azure only)
+
+---
+
+## 3. Imperative vs Declarative – Clear Difference
+
+| Point              | Imperative                      | Declarative                          |
+|--------------------|---------------------------------|--------------------------------------|
+| Style              | "Kaise banana hai" batao        | "Kya chahiye" batao                  |
+| Commands           | Ek-ek command                   | Desired state ek saath               |
+| Tool Example       | `az` CLI, PowerShell            | **Terraform**, Bicep, ARM            |
+| Error Handling     | Manual                          | Tool manage karta hai                |
+| Reusability        | Kam                             | Bahut high                           |
+| Multi-cloud        | Difficult                       | Terraform best                       |
+| Production Ready   | Limited                         | Highly Recommended                   |
+| Learning Curve     | Fast start                      | Thoda initial effort, long term gain |
+
+---
+
+## 4. Why Terraform?
+
+- **Multi-cloud** support (AWS + Azure + GCP + 3000+ providers)
+- Human readable language → **HCL** (HashiCorp Configuration Language)
+- Infrastructure as Code (IaC) ka industry standard tool
+- Strong State Management
+- Modules, Workspaces, CI/CD integration – sab support karta hai
+- Azure ke liye official provider → **AzureRM**
+
+---
+
+## 5. Terraform Registry
+
+Terraform Registry se providers aur modules milte hain.
+
+- Azure ke liye main provider: `hashicorp/azurerm`
+- Official website: [https://registry.terraform.io](https://registry.terraform.io)
+
+---
+
+## 6. Quick Mental Model
+
+```text
+Website / Application Chalana
+          │
+          ├── Personal PC
+          ├── Killercoda
+          ├── On-Prem
+          └── Cloud
+                │
+                ├── Manual (Portal)
+                ├── Imperative (az CLI)
+                └── Declarative
+                      ├── Terraform (Multi-cloud) ★
+                      ├── Bicep
+                      └── ARM Template
 ---
 
 ## ☁️ Cloud क्या है?
