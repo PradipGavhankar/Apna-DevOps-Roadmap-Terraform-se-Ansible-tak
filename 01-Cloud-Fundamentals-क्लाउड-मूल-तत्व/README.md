@@ -120,7 +120,7 @@ In Cloud, infrastructure is hosted in third-party data centers like AWS or Azure
 
 ---
 
-## 1. Cloud Service Models क्या हैं?
+## Cloud Service Models क्या हैं?
 
 Cloud Service Models यह बताते हैं कि **cloud provider** कितना control और management आपके हाथ में छोड़ता है और कितना खुद संभालता है।
 
@@ -132,7 +132,7 @@ Cloud Service Models यह बताते हैं कि **cloud provider** 
 
 ---
 
-## 2. IaaS (Infrastructure as a Service)
+## 1. IaaS (Infrastructure as a Service)
 
 ### क्या है?
 IaaS में cloud provider आपको **basic infrastructure** देता है जैसे:
@@ -171,7 +171,7 @@ IaaS में cloud provider आपको **basic infrastructure** देता
 
 ---
 
-## 3. PaaS (Platform as a Service)
+## 2. PaaS (Platform as a Service)
 
 ### क्या है?
 PaaS में cloud provider **platform** ready करके देता है।  
@@ -212,7 +212,7 @@ Provider manage करता है:
 
 ---
 
-## 4. SaaS (Software as a Service)
+## 3. SaaS (Software as a Service)
 
 ### क्या है?
 SaaS में पूरा **software** ready-made मिलता है।  
