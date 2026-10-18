@@ -88,7 +88,7 @@ Website / Application Chalana
                 ├── Manual (Portal)
                 ├── Imperative (az CLI)
                 └── Declarative
-                      ├── Terraform (Multi-cloud) ★
+                      ├── ★★★ Terraform (Multi-cloud) ★★★
                       ├── Bicep
                       └── ARM Template
 
