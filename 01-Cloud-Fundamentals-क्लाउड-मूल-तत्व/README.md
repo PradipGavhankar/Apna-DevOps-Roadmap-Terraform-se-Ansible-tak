@@ -77,7 +77,7 @@ Terraform Registry se providers aur modules milte hain.
 
 ## 6. Quick Mental Model
 
-```text
+```
 Website / Application Chalana
           │
           ├── Personal PC
