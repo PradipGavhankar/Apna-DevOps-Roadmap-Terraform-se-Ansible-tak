@@ -91,6 +91,7 @@ Website / Application Chalana
                       ├── Terraform (Multi-cloud) ★
                       ├── Bicep
                       └── ARM Template
+
 ```
 
 ## ☁️ Cloud क्या है?
@@ -99,7 +100,7 @@ Cloud एक ऐसा सिस्टम है जहाँ हम servers, st
 
 Cloud is a system where we use servers, storage, databases, and networking resources over the internet.
 
----
+
 
 ## 🏢 On-Premise vs Cloud
 
