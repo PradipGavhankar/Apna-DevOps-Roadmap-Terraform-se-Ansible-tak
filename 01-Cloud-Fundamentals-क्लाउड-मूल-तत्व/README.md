@@ -91,7 +91,7 @@ Website / Application Chalana
                       ├── Terraform (Multi-cloud) ★
                       ├── Bicep
                       └── ARM Template
----
+```
 
 ## ☁️ Cloud क्या है?
 
